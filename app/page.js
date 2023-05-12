@@ -1,95 +1,89 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { useState } from "react";
 
 export default function Home() {
+  const apiKey = process.env.NEXT_PUBLIC_GPT_KEY;
+  const [question, setQuestion] = useState("");
+  const [response, setResponse] = useState(
+    window.localStorage.getItem("interaction")
+  );
+
+  function SendQuestion() {
+    fetch("https://api.openai.com/v1/completions", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + apiKey,
+      },
+      body: JSON.stringify({
+        model: "text-davinci-003",
+        prompt: question,
+        max_tokens: 2048, // tamanho da resposta
+        temperature: 0.5, // criatividade na resposta
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let result = "\n";
+
+        if (json.error?.message) {
+          result += `Error: ${json.error.message}`;
+        } else if (json.choices?.[0].text) {
+          var text = json.choices[0].text || "Sem resposta";
+
+          result += "Chat GPT: " + text;
+          const questionName = "Eu:\n " + question + "\n ";
+          const interection = questionName + result;
+          const interectionRes =
+            (response ? response + "\n\n" : "") + interection;
+          setQuestion("");
+          hendleResponse(interectionRes);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  function hendlePrev(e) {
+    SendQuestion();
+    e.preventDefault();
+  }
+
+  function hendleResponse(value) {
+    window.localStorage.setItem("interaction", value);
+    setResponse(value);
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+    <main className="body">
+      <div className="content">
+        <h1>Como Pósso Ajudar!!!</h1>
+        <form onSubmit={hendlePrev}>
+          <textarea
+            id="result"
+            rows={10}
+            disabled=""
+            placeholder="Resposta do Chat"
+            value={response}
+            readOnly
+          />
+          <input
+            id="inputQuestion"
+            placeholder="Pergunte algo"
+            onChange={(e) => setQuestion(e.target.value)}
+            value={question}
+            autoComplete="off"
+          />
+          <button id="btn">Enviar</button>
+        </form>
+        <button
+          onClick={() => {
+            hendleResponse("");
+          }}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+          Limpar Histórico
+        </button>
       </div>
     </main>
-  )
+  );
 }
