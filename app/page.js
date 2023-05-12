@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const apiKey = process.env.NEXT_PUBLIC_GPT_KEY;
   const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState(
-    window.localStorage.getItem("interaction")
-  );
+  const [response, setResponse] = useState("");
+
+  useEffect(() => {
+    setResponse(window.localStorage.getItem("interaction"));
+  }, []);
 
   function SendQuestion() {
     fetch("https://api.openai.com/v1/completions", {
@@ -20,7 +22,7 @@ export default function Home() {
         model: "text-davinci-003",
         prompt: question,
         max_tokens: 2048, // tamanho da resposta
-        temperature: 0.5, // criatividade na resposta
+        temperature: 0.8, // criatividade na resposta
       }),
     })
       .then((response) => response.json())
