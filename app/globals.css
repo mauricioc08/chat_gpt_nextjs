@@ -6,6 +6,8 @@
 
 .body{
   background-color: #222;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .content {
@@ -13,20 +15,57 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 40px);
   background-color: #222;
   font-family: Arial, sans-serif;
 }
 
 h1 {
+  overflow: hidden; 
+  white-space: nowrap; 
+  animation: typing 2s steps(40); 
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 20px;
   color: #fff;
 }
 
+@keyframes typing {
+  from {
+    width: 0; 
+  }
+  to {
+    width: 100%;
+  }
+}
+
+h1::after {
+  content: '';
+  display: inline-block;
+  height: .7em;
+  border-right: 0.1em solid #fff;
+  margin-left: 0.2em;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #fff;
+  }
+}
+
+
+
+.chat-gpt {
+  color: red;
+}
+
+
 textarea {
-  width: 80%;
+  width: 100%;
   padding: 10px;
   border: 1px solid #444;
   border-radius: 5px;
@@ -35,14 +74,33 @@ textarea {
   font-size: 16px;
   color: #fff;
   background-color: #333;
+  cursor: auto;
+}
+
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background-color: #333;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 1px solid #555;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 input{
-  width: 80%;
-  padding: 10px;
+  width: 100%;
+  padding: 15px;
   border: 1px solid #444;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   resize: none;
   font-size: 16px;
   color: #fff;
@@ -57,13 +115,21 @@ textarea#result {
 }
 
 input#inputQuestion {
-  height: 18%;
+  height: 10%;
 }
 
 textarea,input:focus {
   outline: none;
   border-color: #0077cc;
   box-shadow: 0px 0px 5px #0077cc;
+}
+.button-group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 button {
@@ -88,3 +154,53 @@ button:active {
   box-shadow: none;
 }
 
+button:disabled {
+  opacity: 0.6; 
+  cursor: not-allowed; 
+}
+
+
+footer{
+  background: #222;
+  text-align: center;
+  color: #fff;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 40px;
+}
+
+footer a {
+  text-decoration: none;
+  font-size: 1.3rem;
+  padding: 0 10px;
+  color: #0077cc;
+}
+footer a:hover {
+ color: #fff;
+ text-shadow: 0px 0px 5px #0077cc;
+}
+
+@media(max-width: 538px){
+
+  .content{
+    text-align: center;
+    margin: 0 10px;
+  }
+
+  footer a {
+    font-size: 1rem;
+  }
+
+}
+
+@media(max-width: 324px){
+
+  .content{
+    text-align: center;
+    margin: 0 10px;
+  }
+
+  h1{
+    font-size: 1.5rem;
+  }
+}

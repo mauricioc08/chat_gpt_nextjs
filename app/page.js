@@ -1,16 +1,28 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function Home() {
   const apiKey = process.env.NEXT_PUBLIC_GPT_KEY;
   const [question, setQuestion] = useState("");
   const [response, setResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const textArea = useRef(null);
 
   useEffect(() => {
     setResponse(window.localStorage.getItem("interaction"));
   }, []);
 
+  useEffect(() => {
+    const scrollToBottom = () => {
+      textArea.current.scrollTop = textArea.current.scrollHeight;
+    };
+
+    scrollToBottom();
+  }, [response]);
+
   function SendQuestion() {
+    setIsLoading(true);
+
     fetch("https://api.openai.com/v1/completions", {
       method: "POST",
       headers: {
@@ -22,7 +34,7 @@ export default function Home() {
         model: "text-davinci-003",
         prompt: question,
         max_tokens: 2048, // tamanho da resposta
-        temperature: 0.8, // criatividade na resposta
+        temperature: 1, // criatividade na resposta
       }),
     })
       .then((response) => response.json())
@@ -42,50 +54,77 @@ export default function Home() {
           setQuestion("");
           hendleResponse(interectionRes);
         }
+
+        setIsLoading(false);
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
   }
 
   function hendlePrev(e) {
-    SendQuestion();
     e.preventDefault();
+
+    if (question.trim() !== "") {
+      SendQuestion();
+    }
   }
 
   function hendleResponse(value) {
     window.localStorage.setItem("interaction", value);
     setResponse(value);
+
+    if (value === "") {
+      setQuestion("");
+    }
   }
 
   return (
-    <main className="body">
-      <div className="content">
-        <h1>Como Pósso Ajudar!!!</h1>
-        <form onSubmit={hendlePrev}>
-          <textarea
-            id="result"
-            rows={10}
-            disabled=""
-            placeholder="Resposta do Chat"
-            value={response}
-            readOnly
-          />
-          <input
-            id="inputQuestion"
-            placeholder="Pergunte algo"
-            onChange={(e) => setQuestion(e.target.value)}
-            value={question}
-            autoComplete="off"
-          />
-          <button id="btn">Enviar</button>
-        </form>
-        <button
-          onClick={() => {
-            hendleResponse("");
-          }}
-        >
-          Limpar Histórico
-        </button>
-      </div>
-    </main>
+    <>
+      <main className="body">
+        <div className="content">
+          <form onSubmit={hendlePrev}>
+            <h1>Como Posso Ajudar?</h1>
+            <textarea
+              id="result"
+              rows={18}
+              disabled=""
+              placeholder="Resposta do Chat"
+              value={response}
+              readOnly
+              ref={textArea}
+            />
+            <input
+              id="inputQuestion"
+              placeholder="Pergunte algo"
+              onChange={(e) => setQuestion(e.target.value)}
+              value={question}
+              autoComplete="off"
+            />
+            <div className="button-group">
+              <button id="btn" disabled={isLoading}>
+                {isLoading ? "Carregando..." : "Enviar"}
+              </button>
+              <button onClick={() => hendleResponse("")}>
+                Limpar Histórico
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+      <footer>
+        <p className="footer-copy">
+          <a
+            href="https://github.com/mauricioc08"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Mauricio Cassiano
+          </a>
+          © Alguns direitos reservados.
+        </p>
+      </footer>
+    </>
   );
 }
