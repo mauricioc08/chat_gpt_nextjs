@@ -1,3 +1,24 @@
+# Chat_gpt_NextJs
+
+### A project that requests with chat-gpt. 
+
+this is an application made in NextJs that makes the request with the Chat-gpt api.
+We implemented a responsive design and some functions that NextJs has.
+Besides that I did this project to improve my skills as a Front-End developer. 
+
+Project Link:  https://chat-gpt-nextjs-bsjv-e2c63z3m9-mauricioc08.vercel.app/
+
+Project Exemple: 
+
+https://github.com/mauricioc08/chat_gpt_nextjs/assets/105306316/3f3166c8-10f1-43d5-964c-60480b19f4c1
+
+
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
