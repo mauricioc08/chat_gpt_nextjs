@@ -34,7 +34,7 @@ export default function Home() {
         model: "text-davinci-003",
         prompt: question,
         max_tokens: 2048, // tamanho da resposta
-        temperature: 1, // criatividade na resposta
+        temperature: 0.6, // criatividade na resposta
       }),
     })
       .then((response) => response.json())
@@ -42,6 +42,7 @@ export default function Home() {
         let result = "\n";
 
         if (json.error?.message) {
+          alert(json.error?.message);
           result += `Error: ${json.error.message}`;
         } else if (json.choices?.[0].text) {
           var text = json.choices[0].text || "Sem resposta";
@@ -83,6 +84,13 @@ export default function Home() {
   return (
     <>
       <main className="body">
+        {isLoading ? (
+          <div className="divLoading">
+            <span className="loadingDiv"></span>
+          </div>
+        ) : (
+          ""
+        )}
         <div className="content">
           <form onSubmit={hendlePrev}>
             <h1>Como Posso Ajudar?</h1>
