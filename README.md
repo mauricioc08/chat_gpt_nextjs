@@ -6,7 +6,7 @@ this is an application made in NextJs that makes the request with the Chat-gpt a
 We implemented a responsive design and some functions that NextJs has.
 Besides that I did this project to improve my skills as a Front-End developer. 
 
-Project Link:  https://chat-gpt-nextjs-bsjv-e2c63z3m9-mauricioc08.vercel.app/
+Project Link:  https://chat-gpt-nextjs-nine.vercel.app/
 
 Project Exemple: 
 
